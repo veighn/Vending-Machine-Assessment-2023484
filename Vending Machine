@@ -1,0 +1,78 @@
+class VendingMachine:
+   def __init__(self):
+        self.items = {
+           1: {"name": "Fart Spray", "price": 10.00, "stock": 3},
+           2: {"name": "Dried Mango", "price": 5.00, "stock": 2},
+           3: {"name": "Bubble Gum", "price": 1.00, "stock": 10},
+           4: {"name": "Creamy Milk", "price": 3.00, "stock": 5},
+           5: {"name": "Bottled Water", "price": 1.00, "stock": 10},
+           6: {"name": "Salted Peanuts", "price": 4.00, "stock": 10},
+           7: {"name": "Egg Sandwich", "price": 5.00, "stock": 10},
+           8: {"name": "Iced Tea", "price": 3.00, "stock": 10},
+           9: {"name": "Trail Mix", "price": 2.50, "stock": 10},
+           10: {"name": "Fizzy Soda", "price": 6.00, "stock": 10},
+           11: {"name": "Caramel popcorn", "price": 7.00, "stock": 4},
+           12: {"name": "Cheese Chips", "price": 4.00, "stock": 10},
+           13: {"name": "Cheese Bread", "price": 5.00, "stock": 5},
+           14: {"name": "Carbonated Water", "price": 3.00, "stock": 5}}
+          
+        
+        self.balance = 0.0
+#Shows User the Product, Price, and Quantity of said Product.
+
+   def display_items(self):
+        print("Available items:")
+        for key, item in self.items.items():
+            print(f"{key}: {item['name']} - ${item['price']} (Stock: {item['stock']})")
+            
+#User inputs number between 1-14 to get set product, also shows if users number is invalid.
+   def get_user_choice(self):
+        choice = int(input("Enter the number of the item you want to buy: "))
+        if choice in self.items:
+            return choice
+        else:
+            print("Invalid choice. Please try again.")
+            return self.get_user_choice()
+        
+#User inputs a number on the quantity of set Product, and also shows if quantity of items are over the Users demand.
+   def get_quantity(self, choice):
+        quantity = int(input("Enter the quantity: "))
+        if quantity > 0 and quantity <= self.items[choice]["stock"]:
+            return quantity
+        else:
+            print("Invalid quantity. Please try again.")
+            return self.get_quantity(choice)
+   
+#Calculates the quantity of product to the price of said product.
+   def calculate_total(self, price, quantity):
+        return price * quantity
+#When user buys such item the system changes the quantity of such products stock. '
+
+   def update_stock(self, choice, quantity):
+        self.items[choice]["stock"] -= quantity
+        
+#User inputs their money in the system, if Users money is low the system will wait for the user to input said money for transaction Also if Users money is greater than set price, the user will get change.
+   def process_transaction(self, total):
+        print(f"Total cost: ${total}")
+        while self.balance < total:
+            payment = float(input("Insert money: "))
+            self.balance += payment
+            print(f"Current balance: ${self.balance}")
+        if self.balance >= total:
+            change = self.balance - total
+            self.balance = 0.0
+            print(f"Transaction successful. Your change: ${change}")
+            
+#After User uses system, system will update and change the quantity of items. User gets items and machine will send a happy message. 
+   def main(self):
+        self.display_items()
+        choice = self.get_user_choice()
+        quantity = self.get_quantity(choice)
+        total = self.calculate_total(self.items[choice]["price"], quantity)
+        self.process_transaction(total)
+        self.update_stock(choice, quantity)
+        print(f"Dispensing {quantity} {self.items[choice]['name']}(s). Enjoy!")
+
+if __name__ == "__main__":
+    machine = VendingMachine()
+    machine.main()
